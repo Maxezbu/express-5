@@ -1,25 +1,22 @@
 import express, { json } from "express";
-import { randomUUID } from "node:crypto";
-import cors from 'cors'
-
-
-// Como leer un JSON con ESModule
-// import fs from 'node:fs/';
-// const movies = JSON.parse(fs.readFileSync("./movies.json", "utf-8"));
-
-// Como leer un JSON con ESModule recomendado hasta que node.js soporte el import con assert o type
-import { createRequire } from "node:module";
-// este import tiene información, el meta.url es la url del archivo actual
-const require = createRequire(import.meta.url);
-const movies = require("./movies.json");
+import cors from "cors";
 
 import { validateMovie, validatePatchMovie } from "./zod-schema.js";
+// import { readJson } from "./utils.js";
+
+import { moviesRouter } from './routes/movies.js';
 
 const app = express();
 
 const PORT = process.env.PORT ?? 1234;
 
+//const movies = readJson("./movies.json");
+
 app.disable("x-powered-by");
+
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 // esto es lo mismo que todo lo de abajo comentado
 app.use(json());
@@ -59,83 +56,13 @@ app.use(
   });
 }); */
 
-app.get("/movies/:id", (req, res) => {
-  const id = req.params.id;
-  const movie = movies.find((mov) => mov.id == id);
-  if (!movie) {
-    return res.status(404).send("Movie not found");
-  }
-  res.json(movie);
-});
+app.use('/movies', moviesRouter)
 
-app.get("/movies", (req, res) => {
-  // esto con app.use(cors()) no es necesario pero es como se hace sin cors
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  const { genre } = req.query;
-  console.log(genre);
-
-  if (!genre) {
-    return res.json(movies);
-  }
-
-  const _movies = movies.filter((movie) => {
-    return movie.genre.some((g) => g.toLowerCase() === genre.toLowerCase());
-  });
-
-  if (!_movies.length) {
-    return res.status(404).send("Movie not found");
-  }
-  res.json(_movies);
-});
-
-app.post("/movies", (req, res) => {
-  const _movies = movies;
-
-  const result = validateMovie(req.body);
-  if (result.error) {
-    return res.status(422).json({
-      error: true,
-      message: JSON.parse(result.error.message),
-    });
-  }
-
-  const movie = {
-    id: randomUUID(),
-    ...result.data,
-  };
-  _movies.push(movie);
-
-  res.status(201).json(movie);
-});
-
-app.patch("/movies/:id", (req, res) => {
-  const { id } = req.params;
-  const movie = movies.findIndex((mov) => mov.id == id);
-
-  if (movie === -1) {
-    return res.status(404).send("Movie not found");
-  }
-
-  const result = validatePatchMovie(req.body);
-
-  if (result.error) {
-    return res.status(404).json({
-      error: true,
-      message: JSON.parse(result.error.message),
-    });
-  }
-
-  movies[movie] = {
-    ...movies[movie],
-    ...result.data,
-  };
-  res.json(movies[movie]);
-});
 
 app.options("/movies", (req, res) => {
-    // esto con app.use(cors()) no es necesario pero es como se hace sin cors
-    // para metodos como put, delete, patch, los navegadores hacen una peticion OPTIONS (preflight)
-    // y se debe agregar Access-Control-Allow-Origin
+  // esto con app.use(cors()) no es necesario pero es como se hace sin cors
+  // para metodos como put, delete, patch, los navegadores hacen una peticion OPTIONS (preflight)
+  // y se debe agregar Access-Control-Allow-Origin
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
