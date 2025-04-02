@@ -1,0 +1,19 @@
+{
+  "name": "api-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Eze Buru",
+  "license": "ISC",
+  "description": "Api Rest with Node",
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "5.0.1",
+    "zod": "3.24.2"
+  }
+}

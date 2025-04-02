@@ -1,0 +1,55 @@
+
+
+GET http://localhost:1234/movies
+Content-Type: application/json
+
+
+###
+
+
+## OBTENER UNA PELÍCULA POR ID
+GET http://localhost:1234/movies/04986507-b3ed-442c-8ae7-4c5df804f896
+Content-Type: application/json
+
+
+###
+
+GET http://localhost:1234/movies?genre=action
+Content-Type: application/json
+
+
+###
+
+
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+ {
+    "title": "Iception",
+    "year": 2010,
+    "director": "SomeOne",
+    "duration": 169,
+    "poster": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH",
+    "genre": ["Adventure"],
+    "rate": 9.4
+}
+
+
+###
+
+PATCH http://localhost:1234/movies/04986507-b3ed-442c-8ae7-4c5df804f896
+Content-Type: application/json
+
+{
+    "title": "Iception",
+    "year": 2010,
+    "director": "SomeOne",
+    "duration": 169,
+    "poster": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQovCe0H45fWwAtV31ajOdXRPTxSsMQgPIQ3lcZX_mAW0jXV3kH",
+    "genre": ["Adventure"],
+    "rate": 9.4
+}
+
+
+###
+
